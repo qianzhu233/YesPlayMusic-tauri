@@ -11,7 +11,7 @@ if (process.env.IS_ELECTRON) {
     baseURL = process.env.VUE_APP_ELECTRON_API_URL_DEV;
   }
 } else {
-  baseURL = process.env.VUE_APP_NETEASE_API_URL;
+  baseURL = process.env.VUE_APP_NETEASE_API_URL || '/api';
 }
 
 const service = axios.create({

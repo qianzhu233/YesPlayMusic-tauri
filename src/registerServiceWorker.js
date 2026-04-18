@@ -2,7 +2,19 @@
 
 import { register } from 'register-service-worker';
 
-if (!process.env.IS_ELECTRON) {
+const isTauri =
+  typeof window !== 'undefined' &&
+  (window.__TAURI__ !== undefined ||
+    window.__TAURI_INTERNALS__ !== undefined ||
+    navigator.userAgent.includes('Tauri'));
+
+if (isTauri && 'serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then(registrations => {
+    registrations.forEach(registration => registration.unregister());
+  });
+}
+
+if (!process.env.IS_ELECTRON && !isTauri) {
   register(`${process.env.BASE_URL}service-worker.js`, {
     ready() {
       // console.log(

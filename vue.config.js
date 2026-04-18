@@ -12,7 +12,8 @@ module.exports = {
     port: process.env.DEV_SERVER_PORT || 8080,
     proxy: {
       '^/api': {
-        target: 'http://localhost:3000',
+        target:
+          process.env.VUE_APP_NETEASE_API_PROXY || 'http://127.0.0.1:10754',
         changeOrigin: true,
         pathRewrite: {
           '^/api': '/',
