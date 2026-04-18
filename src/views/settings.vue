@@ -56,6 +56,50 @@
           </select>
         </div>
       </div>
+      <div class="item">
+        <div class="left">
+          <div class="title"> {{ $t('settings.fontFamily.text') }} </div>
+        </div>
+        <div class="right">
+          <div class="font-family-controls">
+            <select v-model="uiFontFamily">
+              <optgroup :label="$t('settings.fontFamily.presets')">
+                <option value="barlow">
+                  {{ $t('settings.fontFamily.barlow') }}
+                </option>
+                <option value="system">
+                  {{ $t('settings.fontFamily.system') }}
+                </option>
+                <option value="serif">
+                  {{ $t('settings.fontFamily.serif') }}
+                </option>
+                <option value="mono">
+                  {{ $t('settings.fontFamily.mono') }}
+                </option>
+              </optgroup>
+              <optgroup
+                v-if="systemFonts.length > 0"
+                :label="$t('settings.fontFamily.systemInstalled')"
+              >
+                <option
+                  v-for="font in systemFonts"
+                  :key="font"
+                  :value="`local:${font}`"
+                >
+                  {{ font }}
+                </option>
+              </optgroup>
+            </select>
+            <button @click="loadSystemFonts">
+              {{
+                loadingSystemFonts
+                  ? $t('settings.fontFamily.loadingSystemFonts')
+                  : $t('settings.fontFamily.loadSystemFonts')
+              }}
+            </button>
+          </div>
+        </div>
+      </div>
       <div v-if="isElectron" class="item">
         <div class="left">
           <div class="title"> {{ $t('settings.trayIcon.text') }} </div>
@@ -261,6 +305,53 @@
               {{ $t('settings.lyricFontSize.xlarge') }} - 36px
             </option>
           </select>
+        </div>
+      </div>
+      <div class="item">
+        <div class="left">
+          <div class="title"> {{ $t('settings.lyricFontFamily.text') }} </div>
+        </div>
+        <div class="right">
+          <div class="font-family-controls">
+            <select v-model="lyricFontFamily">
+              <option value="follow-ui">
+                {{ $t('settings.lyricFontFamily.followUi') }}
+              </option>
+              <optgroup :label="$t('settings.fontFamily.presets')">
+                <option value="barlow">
+                  {{ $t('settings.fontFamily.barlow') }}
+                </option>
+                <option value="system">
+                  {{ $t('settings.fontFamily.system') }}
+                </option>
+                <option value="serif">
+                  {{ $t('settings.fontFamily.serif') }}
+                </option>
+                <option value="mono">
+                  {{ $t('settings.fontFamily.mono') }}
+                </option>
+              </optgroup>
+              <optgroup
+                v-if="systemFonts.length > 0"
+                :label="$t('settings.fontFamily.systemInstalled')"
+              >
+                <option
+                  v-for="font in systemFonts"
+                  :key="`lyric-${font}`"
+                  :value="`local:${font}`"
+                >
+                  {{ font }}
+                </option>
+              </optgroup>
+            </select>
+            <button @click="loadSystemFonts">
+              {{
+                loadingSystemFonts
+                  ? $t('settings.fontFamily.loadingSystemFonts')
+                  : $t('settings.fontFamily.loadSystemFonts')
+              }}
+            </button>
+          </div>
         </div>
       </div>
       <div v-if="isElectron && isLinux" class="item">
@@ -790,7 +881,7 @@
 import { mapState, mapActions } from 'vuex';
 import { isLooseLoggedIn, doLogout } from '@/utils/auth';
 import { auth as lastfmAuth } from '@/api/lastfm';
-import { changeAppearance, bytesToSize } from '@/utils/common';
+import { changeAppearance, applyUIFont, bytesToSize } from '@/utils/common';
 import { countDBSize, clearDB } from '@/utils/db';
 import pkg from '../../package.json';
 
@@ -821,6 +912,8 @@ export default {
         recording: false,
       },
       recordedShortcut: [],
+      loadingSystemFonts: false,
+      systemFonts: [],
     };
   },
   computed: {
@@ -919,6 +1012,19 @@ export default {
         changeAppearance(value);
       },
     },
+    uiFontFamily: {
+      get() {
+        if (this.settings.uiFontFamily === undefined) return 'barlow';
+        return this.settings.uiFontFamily;
+      },
+      set(value) {
+        this.$store.commit('updateSettings', {
+          key: 'uiFontFamily',
+          value,
+        });
+        applyUIFont(value);
+      },
+    },
     trayIconTheme: {
       get() {
         if (this.settings.trayIconTheme === undefined) return 'auto';
@@ -951,6 +1057,18 @@ export default {
       },
       set(value) {
         this.$store.commit('changeLyricFontSize', value);
+      },
+    },
+    lyricFontFamily: {
+      get() {
+        if (this.settings.lyricFontFamily === undefined) return 'follow-ui';
+        return this.settings.lyricFontFamily;
+      },
+      set(value) {
+        this.$store.commit('updateSettings', {
+          key: 'lyricFontFamily',
+          value,
+        });
       },
     },
     outputDevice: {
@@ -1319,6 +1437,31 @@ export default {
   },
   methods: {
     ...mapActions(['showToast']),
+    async loadSystemFonts() {
+      if (this.loadingSystemFonts) return;
+      if (typeof window.queryLocalFonts !== 'function') {
+        this.showToast(this.$t('settings.fontFamily.notSupported'));
+        return;
+      }
+
+      this.loadingSystemFonts = true;
+      try {
+        const localFonts = await window.queryLocalFonts();
+        this.systemFonts = [...new Set(localFonts.map(f => f.family))]
+          .filter(Boolean)
+          .sort((a, b) => a.localeCompare(b));
+        this.showToast(
+          this.$t('settings.fontFamily.loaded', {
+            count: this.systemFonts.length,
+          })
+        );
+      } catch (error) {
+        console.error('[settings] loadSystemFonts failed', error);
+        this.showToast(this.$t('settings.fontFamily.loadFailed'));
+      } finally {
+        this.loadingSystemFonts = false;
+      }
+    },
     getAllOutputDevices() {
       navigator.mediaDevices.enumerateDevices().then(devices => {
         this.allOutputDevices = devices.filter(device => {
@@ -1587,6 +1730,13 @@ h3 {
     margin-top: 0.5em;
     opacity: 0.7;
   }
+}
+
+.font-family-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
 }
 
 select {

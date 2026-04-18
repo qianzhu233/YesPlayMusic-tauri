@@ -161,6 +161,10 @@ export default {
       large: 'Large (Default)',
       xlarge: 'X-Large',
     },
+    lyricFontFamily: {
+      text: 'Lyric Font',
+      followUi: 'Follow Interface Font',
+    },
     deviceSelector: 'Audio Output Device',
     permissionRequired: 'Microphone Permission Required',
     appearance: {
@@ -168,6 +172,20 @@ export default {
       auto: 'Auto',
       light: 'Light',
       dark: 'Dark',
+    },
+    fontFamily: {
+      text: 'Interface Font',
+      presets: 'Preset Fonts',
+      systemInstalled: 'Installed System Fonts',
+      barlow: 'Barlow (Default)',
+      system: 'System Sans',
+      serif: 'Serif',
+      mono: 'Monospace',
+      loadSystemFonts: 'Load System Fonts',
+      loadingSystemFonts: 'Loading...',
+      notSupported: 'System font access is not supported in this environment',
+      loadFailed: 'Failed to load system fonts. Check permissions',
+      loaded: 'Loaded {count} fonts',
     },
     trayIcon: {
       text: 'Tray Icon Color',

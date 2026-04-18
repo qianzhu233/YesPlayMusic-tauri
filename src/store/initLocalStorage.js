@@ -10,10 +10,12 @@ let localStorage = {
   player: {},
   settings: {
     lang: null,
+    uiFontFamily: 'barlow',
     musicLanguage: 'all',
     appearance: 'auto',
     musicQuality: 320000,
     lyricFontSize: 28,
+    lyricFontFamily: 'follow-ui',
     outputDevice: 'default',
     showPlaylistsByAppleMusic: true,
     enableUnblockNeteaseMusic: true,

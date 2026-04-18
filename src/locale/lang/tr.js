@@ -156,6 +156,10 @@ export default {
       large: 'Büyük(Varsayılan)',
       xlarge: 'Çok-Büyük',
     },
+    lyricFontFamily: {
+      text: 'Şarkı Sözü Yazı Tipi',
+      followUi: 'Arayüz Yazı Tipini Kullan',
+    },
     deviceSelector: 'Ses Çıkış Cihazı',
     permissionRequired: 'Mikrofon izni gerekiyor',
     appearance: {
@@ -163,6 +167,20 @@ export default {
       auto: 'Otomatik',
       light: 'Aydınlık',
       dark: 'Karanlık',
+    },
+    fontFamily: {
+      text: 'Arayüz Yazı Tipi',
+      presets: 'Hazır Yazı Tipleri',
+      systemInstalled: 'Yüklü Sistem Yazı Tipleri',
+      barlow: 'Barlow (Varsayılan)',
+      system: 'Sistem Sans',
+      serif: 'Serif',
+      mono: 'Tek Aralıklı',
+      loadSystemFonts: 'Sistem Yazı Tiplerini Yükle',
+      loadingSystemFonts: 'Yükleniyor...',
+      notSupported: 'Bu ortam sistem yazı tiplerine erişimi desteklemiyor',
+      loadFailed: 'Sistem yazı tipleri yüklenemedi. İzinleri kontrol edin',
+      loaded: '{count} yazı tipi yüklendi',
     },
     trayIcon: {
       text: 'Tepsi Simgesi Rengi',

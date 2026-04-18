@@ -158,6 +158,10 @@ export default {
       large: '大（預設）',
       xlarge: '超大',
     },
+    lyricFontFamily: {
+      text: '歌詞字體',
+      followUi: '跟隨介面字體',
+    },
     deviceSelector: '音訊輸出裝置',
     permissionRequired: '需要麥克風權限',
     appearance: {
@@ -165,6 +169,20 @@ export default {
       auto: '自動',
       light: '淺色',
       dark: '深色',
+    },
+    fontFamily: {
+      text: '介面字體',
+      presets: '預設字體',
+      systemInstalled: '系統已安裝字體',
+      barlow: 'Barlow（預設）',
+      system: '系統無襯線',
+      serif: '襯線體',
+      mono: '等寬字體',
+      loadSystemFonts: '讀取系統字體',
+      loadingSystemFonts: '讀取中...',
+      notSupported: '目前環境不支援讀取系統字體',
+      loadFailed: '讀取系統字體失敗，請檢查權限設定',
+      loaded: '已載入 {count} 個字體',
     },
     trayIcon: {
       text: '工作列圖示顏色',

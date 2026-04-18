@@ -305,7 +305,7 @@
 import { mapState, mapMutations, mapActions } from 'vuex';
 import VueSlider from 'vue-slider-component';
 import ContextMenu from '@/components/ContextMenu.vue';
-import { formatTrackTime } from '@/utils/common';
+import { formatTrackTime, resolveFontFamily } from '@/utils/common';
 import { getLyric } from '@/api/track';
 import { lyricParser, copyLyric } from '@/utils/lyrics';
 import ButtonIcon from '@/components/ButtonIcon.vue';
@@ -427,8 +427,14 @@ export default {
       return ret;
     },
     lyricFontSize() {
+      const lyricFontSetting = this.settings.lyricFontFamily || 'follow-ui';
+      const fontSettingToUse =
+        lyricFontSetting === 'follow-ui'
+          ? this.settings.uiFontFamily
+          : lyricFontSetting;
       return {
         fontSize: `${this.$store.state.settings.lyricFontSize || 28}px`,
+        fontFamily: resolveFontFamily(fontSettingToUse),
       };
     },
     noLyric() {

@@ -124,6 +124,34 @@ export function changeAppearance(appearance) {
     .setAttribute('content', appearance === 'dark' ? '#222' : '#fff');
 }
 
+const systemSansFallback =
+  'system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica Neue, PingFang SC, Microsoft YaHei, Source Han Sans SC, Noto Sans CJK SC, WenQuanYi Micro Hei, sans-serif';
+
+const uiFontFamilies = {
+  barlow:
+    "'Barlow', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Helvetica Neue, PingFang SC, Microsoft YaHei, Source Han Sans SC, Noto Sans CJK SC, WenQuanYi Micro Hei, sans-serif, microsoft uighur",
+  system: systemSansFallback,
+  serif:
+    'Iowan Old Style, Palatino Linotype, Times New Roman, Songti SC, STSong, Noto Serif CJK SC, serif',
+  mono: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace',
+};
+
+export function resolveFontFamily(fontSetting) {
+  let fontFamily = uiFontFamilies[fontSetting] || uiFontFamilies.barlow;
+  if (typeof fontSetting === 'string' && fontSetting.startsWith('local:')) {
+    const localFontName = fontSetting.slice(6).trim().replace(/["']/g, '');
+    if (localFontName.length > 0) {
+      fontFamily = `'${localFontName}', ${systemSansFallback}`;
+    }
+  }
+  return fontFamily;
+}
+
+export function applyUIFont(uiFontFamily) {
+  const fontFamily = resolveFontFamily(uiFontFamily);
+  document.documentElement.style.setProperty('--font-family', fontFamily);
+}
+
 export function splitSoundtrackAlbumTitle(title) {
   let keywords = [
     'Music from the Original Motion Picture Score',
